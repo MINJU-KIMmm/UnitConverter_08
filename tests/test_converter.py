@@ -8,7 +8,7 @@ import pytest
 
 
 def test_d_cnv_01_to_meter_feet():
-    """D-CNV-01 / NFR-01: to_meter — 1 feet -> 0.3048 m (±ε)."""
+    """D-CNV-01 / FR-02: to_meter — 1 feet -> 0.3048 m (±ε). OCP 회귀는 green D-OCP-01."""
     pytest.fail("RED: D-CNV-01 to_meter(1 feet) should equal 0.3048 m within tolerance")
 
 

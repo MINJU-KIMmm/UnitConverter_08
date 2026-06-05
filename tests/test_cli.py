@@ -38,8 +38,11 @@ def test_u_in_05_invalid_format_non_numeric():
 
 
 def test_u_out_01_valid_input_multi_line_output():
-    """U-OUT-01 / FR-02: Given 'meter:2.5', Then output 3 or more lines."""
-    pytest.fail("RED: U-OUT-01 meter:2.5 should produce 3+ line conversion output")
+    """U-OUT-01 / FR-02: meter:2.5 → ≥3 lines (meter/feet/yard), input unit line included."""
+    pytest.fail(
+        "RED: U-OUT-01 meter:2.5 should produce ≥3 lines "
+        "(meter, feet, yard rows; source unit included; default table SSOT)"
+    )
 
 
 def test_u_fmt_01_format_table_three_columns():

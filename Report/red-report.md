@@ -24,7 +24,7 @@
 
 | TC ID | PRD | 시나리오 |
 |-------|-----|----------|
-| D-CNV-01 | NFR-01 | `to_meter` — 1 feet → 0.3048 m (±ε) |
+| D-CNV-01 | FR-02 | `to_meter` — 1 feet → 0.3048 m (±ε) — 환산 정확성 (OCP 아님) |
 | D-CNV-02 | FR-02 | 2.5 m → 8.2021 ft |
 | D-CNV-03 | FR-02 | feet→yard, meter 경유 일치 |
 | D-CNV-04 | FR-02 | 2.5 m → 2.7340 yd |
@@ -41,7 +41,7 @@
 | U-IN-03 | FR-04 | `meter:-1` |
 | U-IN-04 | FR-03 | `cubit:1` unknown unit |
 | U-IN-05 | FR-05 | `meter / abc` |
-| U-OUT-01 | FR-02 | 3줄 이상 출력 |
+| U-OUT-01 | FR-02 | ≥3줄, meter/feet/yard 각 1줄(**입력 단위 meter 포함**) |
 | U-FMT-01~03 | EXT-03 | table / json / csv |
 
 ### 3. PRD·환경
@@ -54,11 +54,11 @@
 | ID | TC ID | 파일 |
 |----|-------|------|
 | FR-01 | U-PAR-01 | test_cli.py |
-| FR-02 | U-OUT-01, D-CNV-02, D-CNV-04 | test_cli.py, test_converter.py |
+| FR-02 | U-OUT-01, D-CNV-01~04 | test_cli.py, test_converter.py |
 | FR-03 | U-IN-04 | test_cli.py |
 | FR-04 | U-IN-03 | test_cli.py |
 | FR-05 | U-IN-01, U-IN-02, U-IN-05 | test_cli.py |
-| NFR-01 | D-CNV-01~03, D-REG-01 | test_converter.py |
+| NFR-01 | D-REG-01 (RED), **D-OCP-01** (green 예정) | test_converter.py |
 | EXT-01 | D-CFG-01 | test_converter.py |
 | EXT-02 | D-REG-01 | test_converter.py |
 | EXT-03 | U-FMT-01~03 | test_cli.py |
@@ -86,11 +86,26 @@ pytest -q  →  16 failed, 0 passed, 0 skipped
 | PRD §11 반영 | ✅ |
 | green 구현 | ❌ 다음 단계 |
 
-**README Checklist:** §0~§4·§5(문서·PR) 완료 — §5 「팀 리뷰 후 staging merge」만 대기
+**README Checklist:** §0~§5(문서·PR) 완료 — §5 「팀 리뷰 후 staging merge」→ **Approve** (PR #3)
 
-**다음 단계:** [PR #3](https://github.com/MINJU-KIMmm/UnitConverter_08/pull/3) 팀 리뷰 → `staging` merge → `green` 브랜치
+**다음 단계:** PR #3 `staging` merge → `green` 브랜치 P0 구현
+
+## PR #3 팀 리뷰 반영 (Approve)
+
+| 피드백 | 반영 |
+|--------|------|
+| D-CNV-01은 환산 검증(FR-02), OCP 회귀는 green **D-OCP-01** 예약 | `PRD.md` §6·§11·§12 |
+| 출력 SSOT: table(§7.2) vs README 한 줄형 | `PRD.md` §7.3 — **table default SSOT** |
+| U-OUT-01 「3줄 이상」— 입력 단위 줄 포함 | `PRD.md` §6 Then, `test_cli.py` docstring |
+| Verdict: Approve | 본 Report·PRD 갱신 |
+
+### green 예정 TC
+
+| TC ID | PRD | 내용 |
+|-------|-----|------|
+| D-OCP-01 | NFR-01 | `inch` 추가 시 `converter.py` 무변경 회귀 |
 
 ## 회고
 
 - Dual-Track 표·PRD §11 대조로 누락 TC(U-IN-04, U-FMT-*, U-PAR-01, D-CNV-04) 보완
-- RED 단계는 스켈레톤만 유지해 green에서 본문 구현 예정
+- RED 단계는 스켈레톤만 유지 — 리뷰로 SSOT·OCP TC 분리 명확화 후 green 진행

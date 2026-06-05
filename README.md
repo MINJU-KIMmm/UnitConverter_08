@@ -142,7 +142,8 @@ deactivate
 - [x] `Prompting/red-transcript.md` Export
 - [x] commit 메시지: `[red] ...` + FR/TC ID
 - [x] PR 생성: **base `staging`**, head `red` — [PR #3](https://github.com/MINJU-KIMmm/UnitConverter_08/pull/3)
-- [ ] 팀 리뷰 후 staging merge
+- [x] 팀 리뷰 — **Approve** ([PR #3](https://github.com/MINJU-KIMmm/UnitConverter_08/pull/3), 피드백 `PRD.md` §7.3·§12 반영)
+- [ ] staging merge (리뷰어/팀 수행)
 
 ### 6. 검증 명령
 
