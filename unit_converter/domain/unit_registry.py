@@ -1,3 +1,5 @@
+"""Unit registration and lookup — OCP extension point (NFR-01). No parsing or I/O."""
+
 from unit_converter.domain.length_unit import LengthUnit, RatioUnit
 
 
