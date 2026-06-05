@@ -10,6 +10,16 @@
 
 ## 수행 내용
 
+### Mom Test (요구 검증)
+
+| 항목 | 기록 |
+|------|------|
+| 변환 상황 | inch ↔ cm |
+| 현재 행동 | Google 검색 → ChatGPT로 재확인 |
+| Pain | 매번 검색어 입력, 번거로움 |
+| PRD vs Pain (단위/범위) | *(메모 예정)* inch/cm vs meter/feet/yard |
+| Mom Test → FR | *(메모 예정)* Pain → FR-01 입력, FR-02 전 단위 출력 |
+
 ### 1. Track B — Domain (`tests/test_converter.py`)
 
 | TC ID | PRD | 시나리오 |
