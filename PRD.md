@@ -87,7 +87,7 @@ result = input_value × (ratio_from / ratio_to)
 | FR-03 | unknown unit | `cubit:1` (미등록) | 명확한 에러 | P0 | U-IN-04 | `tests/test_cli.py` |
 | FR-04 | 음수 | `meter:-1` | 거부 / 예외 | P0 | U-IN-03 | `tests/test_cli.py` |
 | FR-05 | 형식 오류 | `meter`, 빈 입력, `meter / abc` | 형식 에러 | P0 | U-IN-01, U-IN-02, U-IN-05 | `tests/test_cli.py` |
-| NFR-01 | OCP | `inch` 추가 | converter 기존 코드 미수정 | P0 | D-REG-01 (RED), **D-OCP-01** (green 예정) | `tests/test_converter.py` |
+| NFR-01 | OCP | `inch` 추가 | converter 기존 코드 미수정 | P0 | D-REG-01, **D-OCP-01** | `tests/test_converter.py` |
 | NFR-02 | SRP | — | Parser/Registry/Converter/Formatter 분리 | P0 | *(구조 리뷰)* | — |
 | EXT-01 | config | `units.json` | 비율 로드 | P1 | D-CFG-01 | `tests/test_converter.py` |
 | EXT-02 | 동적 등록 | `1 cubit = 0.4572 m` | 즉시 변환 | P1 | D-REG-01 | `tests/test_converter.py` |
@@ -98,7 +98,7 @@ result = input_value × (ratio_from / ratio_to)
 | Track | 파일 | 범위 |
 |-------|------|------|
 | **A** (Boundary) | `tests/test_cli.py` | FR-01, FR-03~05, EXT-03 — U-PAR-01, U-IN-*, U-OUT-01, U-FMT-* |
-| **B** (Domain) | `tests/test_converter.py` | FR-02 (D-CNV-*), EXT-01~02, NFR-01 (D-REG-01, green: D-OCP-01), D-CFG-01 |
+| **B** (Domain) | `tests/test_converter.py` | FR-02 (D-CNV-*), EXT-01~02, NFR-01 (D-REG-01, D-OCP-01), D-CFG-01 |
 
 ---
 
@@ -217,27 +217,28 @@ config/units.json
 | U-FMT-02 | EXT-03 | `--format json` | ✅ RED |
 | U-FMT-03 | EXT-03 | `--format csv` | ✅ RED |
 
-### Track B — `tests/test_converter.py` (6건)
+### Track B — `tests/test_converter.py` (7건)
 
 | TC ID | PRD | 시나리오 | 상태 |
 |-------|-----|----------|------|
-| D-CNV-01 | FR-02 | `to_meter` — 1 feet → 0.3048 m (±ε), 환산 정확성 | ✅ RED |
-| D-CNV-02 | FR-02 | `convert_all` — 2.5 m → 8.2021 ft | ✅ RED |
-| D-CNV-03 | FR-02 | feet→yard, meter 경유 일치 | ✅ RED |
-| D-CNV-04 | FR-02 | `convert_all` — 2.5 m → 2.7340 yd | ✅ RED |
-| D-REG-01 | EXT-02 | `cubit 0.4572` 등록 → 변환 가능 | ✅ RED |
-| D-CFG-01 | EXT-01 | 깨진 JSON → `ConfigError` | ✅ RED |
+| D-CNV-01 | FR-02 | `to_meter` — 1 feet → 0.3048 m (±ε), 환산 정확성 | ✅ GREEN |
+| D-CNV-02 | FR-02 | `convert_all` — 2.5 m → 8.2021 ft | ✅ GREEN |
+| D-CNV-03 | FR-02 | feet→yard, meter 경유 일치 | ✅ GREEN |
+| D-CNV-04 | FR-02 | `convert_all` — 2.5 m → 2.7340 yd | ✅ GREEN |
+| D-REG-01 | EXT-02 | `cubit 0.4572` 등록 → 변환 가능 | ✅ GREEN |
+| D-CFG-01 | EXT-01 | 깨진 JSON → `ConfigError` | ✅ GREEN |
+| D-OCP-01 | NFR-01 | `units.json`에 `inch` 추가 — `converter.py` 무변경 | ✅ GREEN |
 
-**합계:** 16건 RED · **미작성:** NFR-02 SRP *(구조 리뷰)* · **green 예정:** D-OCP-01 *(NFR-01 OCP 회귀)*
+**합계:** 17건 GREEN · **미작성:** NFR-02 SRP *(구조 리뷰)*
 
 ---
 
-## 12. green 단계 예정 TC (PR #3 리뷰 · merge 블로커 아님)
+## 12. green 단계 완료 TC (PR #3 리뷰 반영)
 
 | TC ID | PRD | 시나리오 | 비고 |
 |-------|-----|----------|------|
 | **D-OCP-01** | NFR-01 | `units.json`에 `inch` 추가 후 **`converter.py` 소스 변경 없음** (Registry/config만) | RED의 D-CNV-01은 **환산 검증**(FR-02)이며 OCP 회귀 TC가 아님 |
-| *(기존 RED)* | FR-02 / EXT | D-CNV-01~04, U-OUT-01, U-FMT-* | green에서 `pytest.fail` → 본문 구현 |
+| *(기존 RED 16건)* | FR-02 / EXT | D-CNV-01~04, U-OUT-01, U-FMT-* 등 | green에서 `pytest.fail` → 본문 구현 완료 |
 
 ### PR #3 리뷰 요약
 

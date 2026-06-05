@@ -1,8 +1,10 @@
 """Track B — Domain / Logic tests.
 
-TC mapping: D-CNV-01 ~ D-CNV-04, D-REG-01, D-CFG-01
+TC mapping: D-CNV-01 ~ D-CNV-04, D-REG-01, D-CFG-01, D-OCP-01
 PRD: FR-02, NFR-01, EXT-01~02
 """
+
+import json
 
 import pytest
 
@@ -65,3 +67,27 @@ def test_d_cfg_01_load_json_corrupted_config_error(tmp_path):
     bad_file.write_text("{invalid", encoding="utf-8")
     with pytest.raises(ConfigError):
         load_registry_from_json(bad_file)
+
+
+def test_d_ocp_01_inch_via_config_without_converter_change(tmp_path):
+    """D-OCP-01 / NFR-01: units.json에 inch 추가 — Converter 소스 변경 없이 config만으로 변환."""
+    config_file = tmp_path / "units.json"
+    config_file.write_text(
+        json.dumps(
+            {
+                "meter": 1.0,
+                "feet": 3.28084,
+                "yard": 1.09361,
+                "inch": 39.3701,
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    registry = load_registry_from_json(config_file)
+    converter = Converter(registry)
+    results = converter.convert_all(1, "inch")
+
+    assert "inch" in results
+    assert abs(results["meter"] - 0.0254) < 1e-4
+    assert abs(results["feet"] - 0.0833) < 1e-3
