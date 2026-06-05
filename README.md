@@ -73,7 +73,8 @@ deactivate
    - SRP를 만족하도록 클래스 구현 
    - 입력값 검증을 위한 구현
 3. TC 구현 (0.5시간)
-   - 단위변환 기능 검증 및 입력 값 검증 TC 작성 
+   - 단위변환 기능 검증 및 입력 값 검증 TC 작성
+   - → [RED 단계 Checklist](#red-단계-checklist-red-브랜치)
 4. 추가 요구사항 구현 (2시간)
    - 3개 요구사항 구현 및 TC 작성 
 5. 회고 및 발표 (1시간)
@@ -81,3 +82,72 @@ deactivate
    - AI를 어떻게 활용했나? 도움이 된 순간과 한계는?
    - TC를 추가해보면서 개선에 미친 영향, TC 작성 팁
    - 클린코드와 리팩토링에서 느낀 장점과 어려운점
+
+---
+
+## RED 단계 Checklist (`red` 브랜치)
+
+> TC 상세: [PRD.md](PRD.md) §6·§11 · Report: [Report/red-report.md](Report/red-report.md)
+
+### 0. 사전 조건
+
+- [x] `spec`(·Skills / `python-env` rule)이 **staging**에 merge됨
+- [x] `git checkout staging && git pull origin staging`
+- [x] `git checkout -b red` (또는 기존 `red`를 staging 기준으로 rebase/merge)
+- [x] venv 생성·활성화, `pip install pytest`
+
+### 1. Mom Test (요구 검증)
+
+- [x] Mom Test 질답 완료 (제품 설명 X, **과거 행동**만)
+- [x] 변환 상황 기록 (예: inch ↔ cm)
+- [x] 현재 행동 기록 (예: Google → ChatGPT 재확인)
+- [x] Pain 기록 (예: 매번 검색어 입력, 번거로움)
+- [x] PRD와 Pain **단위/범위 차이** 메모 (예: inch/cm vs meter/feet/yard)
+- [x] Mom Test → FR 연결 메모 (예: Pain → FR-01 입력, FR-02 전 단위 출력)
+- [x] 상세는 [Report/red-report.md](Report/red-report.md) § Mom Test
+
+### 2. RED 규칙 (필수 / 금지)
+
+- [x] **production 코드 없음** (`unit_converter/` 등 미구현)
+- [x] 전 테스트 `pytest.fail("RED: ...")` 사용
+- [x] `skip` / `xfail` **미사용**
+- [x] `pytest -v` 실행 → **전부 failed**, passed 0 (16 failed)
+
+### 3. Track B — Domain (`tests/test_converter.py`)
+
+- [x] D-CNV-01 — 1 feet → 0.3048 m (NFR-01)
+- [x] D-CNV-02 — 2.5 m → 8.2021 ft (FR-02)
+- [x] D-CNV-03 — feet→yard, meter 경유 (FR-02)
+- [x] D-CNV-04 — 2.5 m → 2.7340 yd (FR-02)
+- [x] D-REG-01 — cubit 0.4572 등록 (EXT-02)
+- [x] D-CFG-01 — 깨진 JSON → ConfigError (EXT-01)
+
+### 4. Track A — Boundary (`tests/test_cli.py`)
+
+- [x] U-PAR-01 — `meter:2.5` 파싱 (FR-01)
+- [x] U-IN-01 — 빈 입력 (FR-05)
+- [x] U-IN-02 — `meter` 콜론 없음 (FR-05)
+- [x] U-IN-03 — `meter:-1` 음수 (FR-04)
+- [x] U-IN-04 — `cubit:1` unknown unit (FR-03)
+- [x] U-IN-05 — `meter / abc` 형식 오류 (FR-05)
+- [x] U-OUT-01 — `meter:2.5` 3줄 이상 출력 (FR-02)
+- [x] U-FMT-01 — `--format table` (EXT-03)
+- [x] U-FMT-02 — `--format json` (EXT-03)
+- [x] U-FMT-03 — `--format csv` (EXT-03)
+
+### 5. 문서 · Git
+
+- [x] `PRD.md` §6·§11과 `tests/` TC ID **일치**
+- [x] `Report/red-report.md` 작성
+- [x] `Prompting/red-transcript.md` Export
+- [x] commit 메시지: `[red] ...` + FR/TC ID
+- [x] PR 생성: **base `staging`**, head `red` — [PR #3](https://github.com/MINJU-KIMmm/UnitConverter_08/pull/3)
+- [x] 팀 리뷰 — **Approve** ([PR #3](https://github.com/MINJU-KIMmm/UnitConverter_08/pull/3), 피드백 `PRD.md` §7.3·§12 반영)
+- [ ] staging merge (리뷰어/팀 수행)
+
+### 6. 검증 명령
+
+```bash
+venv\Scripts\activate    # Windows
+pytest -v                # 기대: N failed, 0 passed
+```
