@@ -75,14 +75,54 @@
 
 ## TC 목록 · 결과
 
+### 검증 명령
+
+```bash
+venv\Scripts\activate
+pytest -v
+```
+
+### 실행 환경 (2026-06-05)
+
+| 항목 | 값 |
+|------|-----|
+| 브랜치 | `green` |
+| Python | 3.10.11 |
+| pytest | 9.0.3 |
+| 실행 경로 | `C:\DEV\UnitConverter_08\venv\Scripts\python.exe` |
+
+### 요약
+
 ```text
-pytest -v  →  17 passed, 0 failed, 0 skipped
+pytest -v  →  17 passed, 0 failed, 0 skipped  (2.41s)
 ```
 
 | Track | TC 수 | 결과 |
 |-------|-------|------|
 | B (Domain) | 7 | ✅ |
 | A (CLI) | 10 | ✅ |
+
+### 상세 로그
+
+```text
+tests/test_cli.py::test_u_par_01_parse_unit_value PASSED
+tests/test_cli.py::test_u_in_01_empty_input_format_error PASSED
+tests/test_cli.py::test_u_in_02_missing_colon_form_error PASSED
+tests/test_cli.py::test_u_in_03_negative_value_rejected PASSED
+tests/test_cli.py::test_u_in_04_unknown_unit_rejected PASSED
+tests/test_cli.py::test_u_in_05_invalid_format_non_numeric PASSED
+tests/test_cli.py::test_u_out_01_valid_input_multi_line_output PASSED
+tests/test_cli.py::test_u_fmt_01_format_table_three_columns PASSED
+tests/test_cli.py::test_u_fmt_02_format_json PASSED
+tests/test_cli.py::test_u_fmt_03_format_csv PASSED
+tests/test_converter.py::test_d_cnv_01_to_meter_feet PASSED
+tests/test_converter.py::test_d_cnv_02_convert_all_meter_to_feet PASSED
+tests/test_converter.py::test_d_cnv_03_convert_all_feet_to_yard_via_meter PASSED
+tests/test_converter.py::test_d_cnv_04_convert_all_meter_to_yard PASSED
+tests/test_converter.py::test_d_reg_01_register_cubit PASSED
+tests/test_converter.py::test_d_cfg_01_load_json_corrupted_config_error PASSED
+tests/test_converter.py::test_d_ocp_01_inch_via_config_without_converter_change PASSED
+```
 
 ## 결과
 
