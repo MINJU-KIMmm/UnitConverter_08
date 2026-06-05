@@ -91,7 +91,7 @@ Prompting/{단계}-transcript.md
 - 작업 시작 전 `git branch --show-current`로 현재 브랜치 확인
 - 단계와 맞지 않는 브랜치면 사용자에게 브랜치 전환을 안내 (직접 checkout은 사용자 확인 후)
 - 커밋 메시지에 `[spec|red|green|refactoring|new_features]` 접두와 관련 FR/NFR·TC ID 포함
-- PRD(`README.md`) 요구사항 없이 범위를 확장하지 않는다
+- PRD(`PRD.md`, `README.md`) 요구사항 없이 범위를 확장하지 않는다
 - 단계 작업 완료 시 해당 `Report/{단계}-report.md` 작성·갱신을 제안한다
 - 사용자가 Transcript를 Export하면 `Prompting/{단계}-transcript.md` 저장을 안내한다
 

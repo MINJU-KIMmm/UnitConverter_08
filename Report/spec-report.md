@@ -181,7 +181,7 @@ python -m unit_converter --format table    # table | json | csv
 | spec Report | `Report/spec-report.md` (본 문서) |
 | spec Transcript | `Prompting/spec-transcript.md` |
 | 레거시 코드 | `UnitConverter.py` (리팩토링 대상) |
-| PRD | `README.md` |
+| PRD | `PRD.md` (SSOT) · `README.md` (원본) |
 
 ### 데이터 흐름
 
