@@ -82,23 +82,23 @@ result = input_value × (ratio_from / ratio_to)
 
 | ID | 요구 | Given | Then | P | TC ID | 테스트 파일 |
 |----|------|-------|------|---|-------|-------------|
-| FR-01 | `meter:2.5` 파싱 | 유효 문자열 `meter:2.5` | `value=2.5`, `unit=meter` | P0 | *(파서 단위 TC)* | `tests/test_cli.py` |
-| FR-02 | 전 단위 출력 | `meter:2.5` | feet=`8.2021`, yard=`2.7340` | P0 | D-CNV-02 | `tests/test_converter.py` |
-| FR-03 | unknown unit | `cubit:1` (미등록) | 명확한 에러 | P0 | *(추가 예정)* | `tests/test_cli.py` |
+| FR-01 | `meter:2.5` 파싱 | 유효 문자열 `meter:2.5` | `value=2.5`, `unit=meter` | P0 | U-PAR-01 | `tests/test_cli.py` |
+| FR-02 | 전 단위 출력 | `meter:2.5` | feet=`8.2021`, yard=`2.7340` | P0 | U-OUT-01, D-CNV-02, D-CNV-04 | `tests/test_cli.py`, `tests/test_converter.py` |
+| FR-03 | unknown unit | `cubit:1` (미등록) | 명확한 에러 | P0 | U-IN-04 | `tests/test_cli.py` |
 | FR-04 | 음수 | `meter:-1` | 거부 / 예외 | P0 | U-IN-03 | `tests/test_cli.py` |
-| FR-05 | 형식 오류 | `meter`, 빈 입력, `meter / abc` | 형식 에러 | P0 | U-IN-01, U-IN-02 | `tests/test_cli.py` |
+| FR-05 | 형식 오류 | `meter`, 빈 입력, `meter / abc` | 형식 에러 | P0 | U-IN-01, U-IN-02, U-IN-05 | `tests/test_cli.py` |
 | NFR-01 | OCP | `inch` 추가 | converter 기존 코드 미수정 | P0 | D-CNV-01~03, D-REG-01 | `tests/test_converter.py` |
 | NFR-02 | SRP | — | Parser/Registry/Converter/Formatter 분리 | P0 | *(구조 리뷰)* | — |
 | EXT-01 | config | `units.json` | 비율 로드 | P1 | D-CFG-01 | `tests/test_converter.py` |
 | EXT-02 | 동적 등록 | `1 cubit = 0.4572 m` | 즉시 변환 | P1 | D-REG-01 | `tests/test_converter.py` |
-| EXT-03 | 출력 포맷 | `--format` | json/csv/table 검증 | P1 | *(추가 예정)* | `tests/test_cli.py` |
+| EXT-03 | 출력 포맷 | `--format` | json/csv/table 검증 | P1 | U-FMT-01, U-FMT-02, U-FMT-03 | `tests/test_cli.py` |
 
 ### Track A / Track B
 
 | Track | 파일 | 범위 |
 |-------|------|------|
-| **A** (Boundary) | `tests/test_cli.py` | FR-03~05, EXT-03, U-IN-*, U-OUT-* |
-| **B** (Domain) | `tests/test_converter.py` | FR-02, EXT-01~02, D-CNV-*, D-REG-*, D-CFG-* |
+| **A** (Boundary) | `tests/test_cli.py` | FR-01, FR-03~05, EXT-03 — U-PAR-01, U-IN-*, U-OUT-01, U-FMT-* |
+| **B** (Domain) | `tests/test_converter.py` | FR-02, EXT-01~02, NFR-01 — D-CNV-*, D-REG-01, D-CFG-01 |
 
 ---
 
@@ -188,12 +188,34 @@ config/units.json
 
 ---
 
-## 11. 미작성 TC (red 브랜치 추가 예정)
+## 11. RED TC 목록 (red 브랜치)
 
-| TC ID | 대상 | 시나리오 |
-|-------|------|----------|
-| U-IN-04 | FR-03 | `cubit:1` (미등록) → unknown unit 에러 |
-| U-FMT-01 | EXT-03 | `--format table` 3열 출력 |
-| U-FMT-02 | EXT-03 | `--format json` |
-| U-FMT-03 | EXT-03 | `--format csv` |
-| U-OUT-01 | FR-02 | `meter:2.5` → 3줄 이상 출력 (기존 스켈레톤) |
+> 상태: **RED 스켈레톤** (`pytest.fail("RED: ...")`) · skip/xfail 금지 · green 단계에서 본문 구현
+
+### Track A — `tests/test_cli.py` (10건)
+
+| TC ID | PRD | 시나리오 | 상태 |
+|-------|-----|----------|------|
+| U-PAR-01 | FR-01 | `meter:2.5` → `unit=meter`, `value=2.5` | ✅ RED |
+| U-IN-01 | FR-05 | 빈 입력 → 형식 에러 | ✅ RED |
+| U-IN-02 | FR-05 | `meter` (콜론 없음) → 형식 에러 | ✅ RED |
+| U-IN-03 | FR-04 | `meter:-1` → 음수 거부 | ✅ RED |
+| U-IN-04 | FR-03 | `cubit:1` (미등록) → unknown unit 에러 | ✅ RED |
+| U-IN-05 | FR-05 | `meter / abc` → 형식 에러 | ✅ RED |
+| U-OUT-01 | FR-02 | `meter:2.5` → 3줄 이상 출력 | ✅ RED |
+| U-FMT-01 | EXT-03 | `--format table` 3열 출력 | ✅ RED |
+| U-FMT-02 | EXT-03 | `--format json` | ✅ RED |
+| U-FMT-03 | EXT-03 | `--format csv` | ✅ RED |
+
+### Track B — `tests/test_converter.py` (6건)
+
+| TC ID | PRD | 시나리오 | 상태 |
+|-------|-----|----------|------|
+| D-CNV-01 | NFR-01 | `to_meter` — 1 feet → 0.3048 m (±ε) | ✅ RED |
+| D-CNV-02 | FR-02 | `convert_all` — 2.5 m → 8.2021 ft | ✅ RED |
+| D-CNV-03 | FR-02 | feet→yard, meter 경유 일치 | ✅ RED |
+| D-CNV-04 | FR-02 | `convert_all` — 2.5 m → 2.7340 yd | ✅ RED |
+| D-REG-01 | EXT-02 | `cubit 0.4572` 등록 → 변환 가능 | ✅ RED |
+| D-CFG-01 | EXT-01 | 깨진 JSON → `ConfigError` | ✅ RED |
+
+**합계:** 16건 RED · **미작성:** NFR-02 SRP *(구조 리뷰, 자동 TC 없음)*
