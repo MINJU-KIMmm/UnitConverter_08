@@ -130,7 +130,7 @@ deactivate
 - [x] U-IN-03 — `meter:-1` 음수 (FR-04)
 - [x] U-IN-04 — `cubit:1` unknown unit (FR-03)
 - [x] U-IN-05 — `meter / abc` 형식 오류 (FR-05)
-- [x] U-OUT-01 — `meter:2.5` 3줄 이상 출력 (FR-02)
+- [x] U-OUT-01 — `meter:2.5` 3줄 이상 출력, 입력값(2.5) 포함 (FR-02)
 - [x] U-FMT-01 — `--format table` (EXT-03)
 - [x] U-FMT-02 — `--format json` (EXT-03)
 - [x] U-FMT-03 — `--format csv` (EXT-03)
@@ -151,3 +151,9 @@ deactivate
 venv\Scripts\activate    # Windows
 pytest -v                # 기대: N failed, 0 passed
 ```
+
+### 7. 수동 검증 GUI (PRD 범위 외)
+
+- `tools/unit_converter_gui.py` — **PyQt6**, `cli.run()` 재사용
+- 의존성: `pip install -r requirements-gui.txt`
+- 실행: `python tools/unit_converter_gui.py`

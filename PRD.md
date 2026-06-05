@@ -88,7 +88,7 @@ result = input_value × (ratio_from / ratio_to)
 | FR-04 | 음수 | `meter:-1` | 거부 / 예외 | P0 | U-IN-03 | `tests/test_cli.py` |
 | FR-05 | 형식 오류 | `meter`, 빈 입력, `meter / abc` | 형식 에러 | P0 | U-IN-01, U-IN-02, U-IN-05 | `tests/test_cli.py` |
 | NFR-01 | OCP | `inch` 추가 | converter 기존 코드 미수정 | P0 | D-REG-01, **D-OCP-01** | `tests/test_converter.py` |
-| NFR-02 | SRP | — | Parser/Registry/Converter/Formatter 분리 | P0 | *(구조 리뷰)* | — |
+| NFR-02 | SRP | — | Parser/Registry/Converter/Formatter 분리 | P0 | D-SRP-01~03, D-GM-01~03 | `tests/test_srp.py`, `tests/test_golden_master.py` |
 | EXT-01 | config | `units.json` | 비율 로드 | P1 | D-CFG-01 | `tests/test_converter.py` |
 | EXT-02 | 동적 등록 | `1 cubit = 0.4572 m` | 즉시 변환 | P1 | D-REG-01 | `tests/test_converter.py` |
 | EXT-03 | 출력 포맷 | `--format` | json/csv/table 검증 | P1 | U-FMT-01, U-FMT-02, U-FMT-03 | `tests/test_cli.py` |
@@ -229,9 +229,19 @@ config/units.json
 | D-CFG-01 | EXT-01 | 깨진 JSON → `ConfigError` | ✅ GREEN |
 | D-OCP-01 | NFR-01 | `units.json`에 `inch` 추가 — `converter.py` 무변경 | ✅ GREEN |
 
-**합계:** 17건 GREEN · **미작성:** NFR-02 SRP *(구조 리뷰)*
+**합계:** 23건 REFACTORING · green 17건 + GM 3건 + SRP 3건
 
 ---
+
+## 13. refactoring 단계 TC (PR #4 리뷰 반영)
+
+| TC ID | PRD | 시나리오 | 비고 |
+|-------|-----|----------|------|
+| D-GM-01~03 | FR-02, EXT-03 | `meter:2.5` table/json/csv Golden Master | 리팩터링 전 동작 잠금 |
+| D-SRP-01~03 | NFR-02 | Parser/Registry/Converter/Formatter 모듈 분리 | AST·행위 검증 |
+| *(PR #4 REFACTOR)* | — | `_default_registry()` → `conftest` fixture + `units.json` SSOT | `test_converter.py` |
+| *(PR #4 REFACTOR)* | — | `app/exceptions.py` — 입력·검증 예외 계층 | CLI stderr 메시지 유지 |
+| *(PR #4 REFACTOR)* | — | GUI → `tools/` PyQt6 (PRD 범위 외) | `tools/unit_converter_gui.py`, `requirements-gui.txt` |
 
 ## 12. green 단계 완료 TC (PR #3 리뷰 반영)
 

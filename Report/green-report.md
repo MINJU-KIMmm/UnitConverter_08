@@ -4,7 +4,7 @@
 
 ## 목표
 
-- RED 16건 TC를 통과하는 **최소 구현** (Track B → Track A, 1 RED 묶음당 1 커밋)
+- RED 16건 TC를 통과하는 **최소 구현** (Track B → Track A 우선, 이후 SSOT·D-OCP-01·GUI·Report 커밋)
 - PRD §7.3 출력 SSOT(table 기본) 반영
 - green 예정 **D-OCP-01** (NFR-01 OCP 회귀) 추가
 - `pytest -v` 전 TC 통과
@@ -55,7 +55,7 @@
 
 ### 5. 검증용 GUI (PRD 외 편의)
 
-- `unit_converter_gui.py` — tkinter, `cli.run()` 재사용
+- `tools/unit_converter_gui.py` — tkinter, `cli.run()` 재사용 *(PRD 범위 외, refactoring에서 `tools/`로 이동)*
 - table / json / csv 원문·표 탭 표시
 
 ## PRD 매핑
@@ -68,7 +68,7 @@
 | FR-04 | U-IN-03 | test_cli.py | ✅ |
 | FR-05 | U-IN-01, U-IN-02, U-IN-05 | test_cli.py | ✅ |
 | NFR-01 | D-REG-01, D-OCP-01 | test_converter.py | ✅ |
-| NFR-02 | — | 구조 분리 *(리뷰)* | 🔄 refactoring 예정 |
+| NFR-02 | — | 구조 분리 *(리뷰)* | ✅ refactoring (D-SRP-01~03, D-GM-01~03) |
 | EXT-01 | D-CFG-01 | test_converter.py | ✅ |
 | EXT-02 | D-REG-01 | test_converter.py | ✅ |
 | EXT-03 | U-FMT-01~03 | test_cli.py | ✅ |

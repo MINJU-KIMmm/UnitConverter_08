@@ -75,6 +75,7 @@ def test_u_out_01_valid_input_multi_line_output():
     assert "meter" in output
     assert "feet" in output
     assert "yard" in output
+    assert "2.5" in result.stdout
 
 
 def test_u_fmt_01_format_table_three_columns():
