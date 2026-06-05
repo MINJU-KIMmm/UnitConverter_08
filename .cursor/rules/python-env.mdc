@@ -1,0 +1,26 @@
+---
+description: Python 실행·테스트는 프로젝트 venv 사용
+alwaysApply: true
+---
+
+# Python 환경 — venv 필수
+
+이 저장소에서 `python`, `pytest`, `pip` 명령은 **프로젝트 가상환경(`venv/`)** 안에서 실행한다.
+
+## Agent 행동 규칙
+
+1. 셸 명령 실행 전 `venv` 존재 여부 확인 — 없으면 `python -m venv venv` 생성
+2. Windows: `venv\Scripts\activate` / macOS·Linux: `source venv/bin/activate`
+3. 테스트 실행: `pytest` (시스템 Python·전역 pytest 사용 금지)
+4. 의존성 설치: 활성화된 venv에서 `pip install` (예: `pip install pytest`)
+5. 상세 절차는 `README.md` 「가상환경 설정 및 실행」 참조
+
+## 예시 (Windows PowerShell)
+
+```powershell
+python -m venv venv
+venv\Scripts\activate
+pip install pytest
+pytest -v
+python UnitConverter.py
+```
