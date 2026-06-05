@@ -12,35 +12,64 @@ def _round_result(value: float) -> float:
     return round(value, _PRECISION)
 
 
-def _display_result(value: float) -> str:
-    return f"{_round_result(value):.{_PRECISION}f}"
+def _format_input_value(value: float) -> str:
+    return f"{value:.4f}".rstrip("0").rstrip(".")
 
 
-def format_table(input_unit: str, input_value: float, results: dict[str, float]) -> str:
-    lines = ["unit | input | result"]
-    for unit, result in results.items():
-        lines.append(f"{unit} | {input_value} | {_display_result(result)}")
+def _format_result_value(value: float, same_unit: bool) -> str:
+    rounded = _round_result(value)
+    if same_unit:
+        return _format_input_value(rounded)
+    return f"{rounded:.4f}"
+
+
+def _make_bordered_table(headers: tuple[str, ...], rows: list[tuple[str, ...]]) -> str:
+    widths = [len(header) for header in headers]
+    for row in rows:
+        for index, cell in enumerate(row):
+            widths[index] = max(widths[index], len(cell))
+
+    def border() -> str:
+        return "+" + "+".join("-" * (width + 2) for width in widths) + "+"
+
+    def row_line(cells: tuple[str, ...]) -> str:
+        return "|" + "|".join(f" {cells[i]:<{widths[i]}} " for i in range(len(cells))) + "|"
+
+    lines = [border(), row_line(headers), border()]
+    lines.extend(row_line(row) for row in rows)
+    lines.append(border())
     return "\n".join(lines)
 
 
-def format_json(input_unit: str, input_value: float, results: dict[str, float]) -> str:
+def format_table(input_unit: str, input_value: float, results: dict[str, float]) -> str:
+    input_display = _format_input_value(input_value)
     rows = [
-        {
-            "unit": unit,
-            "input": input_value,
-            "result": _round_result(result),
-        }
+        (
+            unit,
+            input_display,
+            _format_result_value(result, unit == input_unit),
+        )
         for unit, result in results.items()
     ]
-    return json.dumps(rows, indent=2)
+    return _make_bordered_table(("unit", "input", "result"), rows)
+
+
+def format_json(input_unit: str, input_value: float, results: dict[str, float]) -> str:
+    output = {unit: _round_result(result) for unit, result in results.items()}
+    return json.dumps(output, indent=2)
 
 
 def format_csv(input_unit: str, input_value: float, results: dict[str, float]) -> str:
     buffer = io.StringIO()
     writer = csv.writer(buffer)
     writer.writerow(["unit", "input", "result"])
+    input_display = _format_input_value(input_value)
     for unit, result in results.items():
-        writer.writerow([unit, input_value, _display_result(result)])
+        writer.writerow([
+            unit,
+            input_display,
+            _format_result_value(result, unit == input_unit),
+        ])
     return buffer.getvalue().strip()
 
 

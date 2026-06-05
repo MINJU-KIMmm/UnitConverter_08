@@ -78,24 +78,41 @@ def test_u_out_01_valid_input_multi_line_output():
 
 
 def test_u_fmt_01_format_table_three_columns():
-    """U-FMT-01 / EXT-03: Given --format table, Then 3-column table output."""
+    """U-FMT-01 / EXT-03: Given --format table, Then 3-column bordered table output."""
     result = _run_cli("meter:2.5", "--format", "table")
     assert result.returncode == 0
-    lines = result.stdout.strip().splitlines()
-    assert lines[0] == "unit | input | result"
-    for line in lines[1:]:
-        parts = [part.strip() for part in line.split("|")]
-        assert len(parts) == 3
+    output = result.stdout
+    assert "unit" in output and "input" in output and "result" in output
+    assert "8.2021" in output
+    assert "2.7340" in output
+
+    data_rows = []
+    for line in output.splitlines():
+        if not line.startswith("|") or line.startswith("+"):
+            continue
+        parts = [part.strip() for part in line.strip("|").split("|")]
+        if len(parts) == 3 and parts[0] != "unit":
+            data_rows.append(parts)
+
+    assert len(data_rows) >= 3
+    meter_row = next(row for row in data_rows if row[0] == "meter")
+    feet_row = next(row for row in data_rows if row[0] == "feet")
+    yard_row = next(row for row in data_rows if row[0] == "yard")
+    assert meter_row == ["meter", "2.5", "2.5"]
+    assert feet_row == ["feet", "2.5", "8.2021"]
+    assert yard_row == ["yard", "2.5", "2.7340"]
 
 
 def test_u_fmt_02_format_json():
-    """U-FMT-02 / EXT-03: Given --format json, Then valid JSON conversion output."""
+    """U-FMT-02 / EXT-03: Given --format json, Then flat unit→result JSON (units.json 형태)."""
     result = _run_cli("meter:2.5", "--format", "json")
     assert result.returncode == 0
     data = json.loads(result.stdout)
-    assert isinstance(data, list)
-    assert len(data) >= 3
-    assert all("unit" in row and "input" in row and "result" in row for row in data)
+    assert isinstance(data, dict)
+    assert set(data.keys()) >= {"meter", "feet", "yard"}
+    assert data["meter"] == 2.5
+    assert abs(data["feet"] - 8.2021) < 1e-4
+    assert abs(data["yard"] - 2.7340) < 1e-4
 
 
 def test_u_fmt_03_format_csv():
