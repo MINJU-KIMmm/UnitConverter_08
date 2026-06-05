@@ -1,0 +1,104 @@
+---
+description: Git 브랜치 전략, ARRR 워크플로우, 팀 리뷰 규칙
+alwaysApply: true
+---
+
+# Git Workflow — 브랜치 전략 & 팀 리뷰
+
+## 프로젝트 명명
+
+- 형식: `UnitConverter_번호` (예: `UnitConverter_08`)
+- 현재 저장소: **UnitConverter_08**
+
+## 브랜치 계층
+
+```
+main          ← 운영(최종)
+└── staging   ← 작업 수행 기준점 (main에서 분기)
+    ├── spec          ← 분석·설계
+    ├── red           ← RED 테스트 작성 (TDD)
+    ├── green         ← 최소 구현 통과
+    ├── refactoring   ← 안전한 리팩토링
+    └── new_features  ← 추가 요구사항 구현
+```
+
+**Agent(ARRR)의 실제 작업은 `staging` 하위 작업 브랜치에서만 수행한다.**
+`main`이나 `staging`에 직접 커밋하지 않는다.
+
+## ARRR 작업 순서
+
+| 단계 | 브랜치 | 목적 |
+|------|--------|------|
+| 1 | `spec` | PRD 분석, 패키지/클래스 설계, FR·NFR 매핑 |
+| 2 | `red` | 실패하는 테스트(TC) 먼저 작성 |
+| 3 | `green` | 테스트를 통과하는 최소 구현 |
+| 4 | `refactoring` | OCP/SRP 리팩토링 (테스트 유지) |
+| 5 | `new_features` | 설정 외부화, 동적 등록, 출력 포맷 등 추가 FR |
+
+브랜치 간 이동 시 **이전 단계가 팀 리뷰를 거쳐 `staging`에 반영된 뒤** 다음 브랜치를 `staging`에서 분기한다.
+
+## 머지 흐름
+
+```
+작업 브랜치 → 팀 리뷰 → staging → main
+```
+
+- 작업 브랜치끼리 **서로 merge 하지 않는다**
+- Agent는 **merge/push를 사용자가 명시적으로 요청할 때만** 수행한다
+- PR/머지 전 현재 브랜치·대상 브랜치·변경 범위를 사용자에게 확인한다
+
+## 팀 리뷰 (필수)
+
+1. **개별 merge 금지** — 모든 브랜치는 팀 리뷰 통과 후 `staging`에만 반영
+2. **추적성(Traceability)** — PRD → TC → Code(C2C) 매핑을 PR/커밋 메시지에 명시
+3. **결과 공유** — Test/Review Loop에서 통과한 TC 커밋을 공유
+
+## 산출물 폴더
+
+| 폴더 | 용도 | 작성 주체 |
+|------|------|-----------|
+| `Report/` | ARRR 각 단계 **작업 Report** (분석·설계, TC, 구현, 리팩토링, 추가 FR 결과) | Agent 또는 사용자 |
+| `Prompting/` | Cursor **Export Transcript** (해당 단계 AI 대화 기록) | 사용자 Export → 저장 |
+
+### Report 명명 규칙
+
+```
+Report/{단계}-report.md
+```
+
+| 단계 | 파일명 |
+|------|--------|
+| spec | `Report/spec-report.md` |
+| red | `Report/red-report.md` |
+| green | `Report/green-report.md` |
+| refactoring | `Report/refactoring-report.md` |
+| new_features | `Report/new_features-report.md` |
+
+Report 필수 섹션: **목표 · 수행 내용 · PRD(FR/NFR) 매핑 · TC 목록 · 결과 · 회고**
+
+### Prompting 명명 규칙
+
+```
+Prompting/{단계}-transcript.md
+```
+
+- Cursor 채팅에서 **Export Transcript** 후 `Prompting/`에 저장
+- Report와 **동일 단계명**으로 짝을 맞춘다 (예: `spec-report.md` ↔ `spec-transcript.md`)
+- Agent는 `Prompting/` 파일을 참고해 맥락을 이어가되, Report를 공식 산출물로 우선한다
+
+## Agent 행동 규칙
+
+- 작업 시작 전 `git branch --show-current`로 현재 브랜치 확인
+- 단계와 맞지 않는 브랜치면 사용자에게 브랜치 전환을 안내 (직접 checkout은 사용자 확인 후)
+- 커밋 메시지에 `[spec|red|green|refactoring|new_features]` 접두와 관련 FR/NFR·TC ID 포함
+- PRD(`README.md`) 요구사항 없이 범위를 확장하지 않는다
+- 단계 작업 완료 시 해당 `Report/{단계}-report.md` 작성·갱신을 제안한다
+- 사용자가 Transcript를 Export하면 `Prompting/{단계}-transcript.md` 저장을 안내한다
+
+## 브랜치 생성 예시
+
+```bash
+git checkout staging
+git pull origin staging
+git checkout -b spec      # 또는 red, green, refactoring, new_features
+```
