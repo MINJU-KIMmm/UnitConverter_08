@@ -184,7 +184,7 @@ config/units.json
 | **`PRD.md`** (본 문서) | 요구사항·추적표 SSOT |
 | `README.md` | 프로젝트 소개·환경 설정·Activities |
 | `Report/spec-report.md` | spec 단계 분석·설계 Report |
-| `Report/red-report.md` | red 단계 TC Report (예정) |
+| `Report/red-report.md` | red 단계 TC Report |
 
 ---
 

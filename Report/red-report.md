@@ -14,11 +14,11 @@
 
 | 항목 | 기록 |
 |------|------|
-| 변환 상황 | inch ↔ cm |
-| 현재 행동 | Google 검색 → ChatGPT로 재확인 |
-| Pain | 매번 검색어 입력, 번거로움 |
-| PRD vs Pain (단위/범위) | *(메모 예정)* inch/cm vs meter/feet/yard |
-| Mom Test → FR | *(메모 예정)* Pain → FR-01 입력, FR-02 전 단위 출력 |
+| 변환 상황 | inch ↔ cm (일상·쇼핑·해외 사이트) |
+| 현재 행동 | Google 검색 → ChatGPT로 재확인 (매번 새 검색어) |
+| Pain | 매번 검색어 입력, 번거로움·맥락 전환 |
+| **PRD vs Pain (단위/범위)** | Mom은 **inch/cm** 중심, PRD 실습은 **meter/feet/yard**. Pain(반복 검색·한 번에 여러 단위)은 동일하나 **제품 단위 스코프는 PRD가 SSOT** — green 이후 inch 등은 Registry(OCP)로 확장 가능 |
+| **Mom Test → FR** | Pain(검색 반복) → **FR-01** `unit:value` 한 줄 입력 · **FR-02** 한 값으로 전 단위 출력 · **FR-05** 잘못된 입력 조기 거부로 재검색 감소 |
 
 ### 1. Track B — Domain (`tests/test_converter.py`)
 
@@ -86,7 +86,9 @@ pytest -q  →  16 failed, 0 passed, 0 skipped
 | PRD §11 반영 | ✅ |
 | green 구현 | ❌ 다음 단계 |
 
-**다음 단계:** 팀 리뷰 → `red` → `staging` merge → `green` 브랜치
+**README Checklist:** §0~§4·§5(문서·PR) 완료 — §5 「팀 리뷰 후 staging merge」만 대기
+
+**다음 단계:** [PR #3](https://github.com/MINJU-KIMmm/UnitConverter_08/pull/3) 팀 리뷰 → `staging` merge → `green` 브랜치
 
 ## 회고
 

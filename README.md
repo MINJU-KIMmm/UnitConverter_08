@@ -91,10 +91,10 @@ deactivate
 
 ### 0. 사전 조건
 
-- [ ] `spec`(·Skills / `python-env` rule)이 **staging**에 merge됨
-- [ ] `git checkout staging && git pull origin staging`
-- [ ] `git checkout -b red` (또는 기존 `red`를 staging 기준으로 rebase/merge)
-- [ ] venv 생성·활성화, `pip install pytest`
+- [x] `spec`(·Skills / `python-env` rule)이 **staging**에 merge됨
+- [x] `git checkout staging && git pull origin staging`
+- [x] `git checkout -b red` (또는 기존 `red`를 staging 기준으로 rebase/merge)
+- [x] venv 생성·활성화, `pip install pytest`
 
 ### 1. Mom Test (요구 검증)
 
@@ -102,46 +102,46 @@ deactivate
 - [x] 변환 상황 기록 (예: inch ↔ cm)
 - [x] 현재 행동 기록 (예: Google → ChatGPT 재확인)
 - [x] Pain 기록 (예: 매번 검색어 입력, 번거로움)
-- [ ] PRD와 Pain **단위/범위 차이** 메모 (예: inch/cm vs meter/feet/yard)
-- [ ] Mom Test → FR 연결 메모 (예: Pain → FR-01 입력, FR-02 전 단위 출력)
-- [ ] 상세는 [Report/red-report.md](Report/red-report.md) § Mom Test
+- [x] PRD와 Pain **단위/범위 차이** 메모 (예: inch/cm vs meter/feet/yard)
+- [x] Mom Test → FR 연결 메모 (예: Pain → FR-01 입력, FR-02 전 단위 출력)
+- [x] 상세는 [Report/red-report.md](Report/red-report.md) § Mom Test
 
 ### 2. RED 규칙 (필수 / 금지)
 
-- [ ] **production 코드 없음** (`unit_converter/` 등 미구현)
-- [ ] 전 테스트 `pytest.fail("RED: ...")` 사용
-- [ ] `skip` / `xfail` **미사용**
-- [ ] `pytest -v` 실행 → **전부 failed**, passed 0
+- [x] **production 코드 없음** (`unit_converter/` 등 미구현)
+- [x] 전 테스트 `pytest.fail("RED: ...")` 사용
+- [x] `skip` / `xfail` **미사용**
+- [x] `pytest -v` 실행 → **전부 failed**, passed 0 (16 failed)
 
 ### 3. Track B — Domain (`tests/test_converter.py`)
 
-- [ ] D-CNV-01 — 1 feet → 0.3048 m (NFR-01)
-- [ ] D-CNV-02 — 2.5 m → 8.2021 ft (FR-02)
-- [ ] D-CNV-03 — feet→yard, meter 경유 (FR-02)
-- [ ] D-CNV-04 — 2.5 m → 2.7340 yd (FR-02)
-- [ ] D-REG-01 — cubit 0.4572 등록 (EXT-02)
-- [ ] D-CFG-01 — 깨진 JSON → ConfigError (EXT-01)
+- [x] D-CNV-01 — 1 feet → 0.3048 m (NFR-01)
+- [x] D-CNV-02 — 2.5 m → 8.2021 ft (FR-02)
+- [x] D-CNV-03 — feet→yard, meter 경유 (FR-02)
+- [x] D-CNV-04 — 2.5 m → 2.7340 yd (FR-02)
+- [x] D-REG-01 — cubit 0.4572 등록 (EXT-02)
+- [x] D-CFG-01 — 깨진 JSON → ConfigError (EXT-01)
 
 ### 4. Track A — Boundary (`tests/test_cli.py`)
 
-- [ ] U-PAR-01 — `meter:2.5` 파싱 (FR-01)
-- [ ] U-IN-01 — 빈 입력 (FR-05)
-- [ ] U-IN-02 — `meter` 콜론 없음 (FR-05)
-- [ ] U-IN-03 — `meter:-1` 음수 (FR-04)
-- [ ] U-IN-04 — `cubit:1` unknown unit (FR-03)
-- [ ] U-IN-05 — `meter / abc` 형식 오류 (FR-05)
-- [ ] U-OUT-01 — `meter:2.5` 3줄 이상 출력 (FR-02)
-- [ ] U-FMT-01 — `--format table` (EXT-03)
-- [ ] U-FMT-02 — `--format json` (EXT-03)
-- [ ] U-FMT-03 — `--format csv` (EXT-03)
+- [x] U-PAR-01 — `meter:2.5` 파싱 (FR-01)
+- [x] U-IN-01 — 빈 입력 (FR-05)
+- [x] U-IN-02 — `meter` 콜론 없음 (FR-05)
+- [x] U-IN-03 — `meter:-1` 음수 (FR-04)
+- [x] U-IN-04 — `cubit:1` unknown unit (FR-03)
+- [x] U-IN-05 — `meter / abc` 형식 오류 (FR-05)
+- [x] U-OUT-01 — `meter:2.5` 3줄 이상 출력 (FR-02)
+- [x] U-FMT-01 — `--format table` (EXT-03)
+- [x] U-FMT-02 — `--format json` (EXT-03)
+- [x] U-FMT-03 — `--format csv` (EXT-03)
 
 ### 5. 문서 · Git
 
-- [ ] `PRD.md` §6·§11과 `tests/` TC ID **일치**
-- [ ] `Report/red-report.md` 작성
-- [ ] `Prompting/red-transcript.md` Export
-- [ ] commit 메시지: `[red] ...` + FR/TC ID
-- [ ] PR 생성: **base `staging`**, head `red`
+- [x] `PRD.md` §6·§11과 `tests/` TC ID **일치**
+- [x] `Report/red-report.md` 작성
+- [x] `Prompting/red-transcript.md` Export
+- [x] commit 메시지: `[red] ...` + FR/TC ID
+- [x] PR 생성: **base `staging`**, head `red` — [PR #3](https://github.com/MINJU-KIMmm/UnitConverter_08/pull/3)
 - [ ] 팀 리뷰 후 staging merge
 
 ### 6. 검증 명령
